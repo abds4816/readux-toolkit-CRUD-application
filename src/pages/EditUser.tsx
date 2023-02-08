@@ -1,34 +1,48 @@
-import { Card, FormControl, FormLabel, Heading, Input, useToast, VStack } from '@chakra-ui/react'
-import { useState } from 'react'
+import { Card, FormControl, FormLabel, Heading, Input, Skeleton, useToast, VStack } from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import BrandButton from '../components/BrandButton'
-import { user, editUser } from '../features/users/UserSlice'
-import { useAppDispatch, useAppSelector } from '../store'
+import { useUpdateUserMutation, useUserQuery } from '../features/api/ApiSlice'
 
 const EditUser = () => {
 
     const toast = useToast()
-    const params = useParams()
+    const { id } = useParams()
     const navigate = useNavigate()
-    const dispatch = useAppDispatch()
 
-    const users = useAppSelector(state => state.user.users)
-    const existingUser = users.filter(user => user.id === params.id)
-    const { username, email, description } = existingUser[0]
-    const [values, setValues] = useState<user>({
-        id: params.id,
-        username,
-        email,
-        description
-    })
-    const handleAdd = (e: any) => {
+    // RTK Query Hooks
+    const { data: user, isLoading, isSuccess, isError, error } = useUserQuery(id!)
+    const [updateUser] = useUpdateUserMutation()
+
+    // states
+    const [username, setUsername] = useState<string>('')
+    const [email, setEmail] = useState<string>('')
+    const [contact, setContact] = useState<string>('')
+
+    useEffect(() => {
+        setUsername(user?.username!)
+        setEmail(user?.email!)
+        setContact(user?.contact!)
+    }, [isSuccess])
+
+    useEffect(() => {
+        isError && (
+            toast({
+                description: 'something went wrong',
+                status: 'error',
+                isClosable: true
+            })
+        )
+    }, [error])
+
+    const handleUpdate = (e: any) => {
         e.preventDefault()
-        dispatch(editUser({
-            id: params.id,
-            username: values.username,
-            email: values.email,
-            description: values.description
-        }))
+        updateUser({
+            id,
+            username,
+            email,
+            contact
+        })
         navigate('/')
         toast({
             description: 'user updated successfully',
@@ -41,41 +55,46 @@ const EditUser = () => {
     }
 
     return (
-        <Card mt='16' mx='auto' p='8' maxW='96'>
-            <VStack as='form' spacing='4'>
-                <Heading textTransform='capitalize' fontSize='2xl'>update existing user</Heading>
-                <FormControl isRequired>
-                    <FormLabel>Username</FormLabel>
-                    <Input
-                        type='text'
-                        value={values.username}
-                        onChange={(e) => setValues({ ...values, username: e.target.value })}
-                    />
-                </FormControl>
-                <FormControl isRequired>
-                    <FormLabel>Email address</FormLabel>
-                    <Input
-                        type='email'
-                        value={values.email}
-                        onChange={(e) => setValues({ ...values, email: e.target.value })}
-                    />
-                </FormControl>
-                <FormControl isRequired>
-                    <FormLabel>Profile Bio</FormLabel>
-                    <Input
-                        type='text'
-                        value={values.description}
-                        onChange={(e) => setValues({ ...values, description: e.target.value })}
-                    />
-                </FormControl>
-                <BrandButton
-                    color='indigo'
-                    onClick={handleAdd}
-                >
-                    edit user
-                </BrandButton>
-            </VStack>
-        </Card>
+        <>
+            {isLoading && <Skeleton mt='16' mx='auto' p='8' maxW='96' h='420px' rounded='lg' />}
+            {isSuccess &&
+                <Card mt='16' mx='auto' p='8' maxW='96'>
+                    <VStack as='form' spacing='4' onSubmit={handleUpdate}>
+                        <Heading textTransform='capitalize' fontSize='2xl'>update existing user</Heading>
+                        <FormControl isRequired>
+                            <FormLabel>Username</FormLabel>
+                            <Input
+                                type='text'
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                            />
+                        </FormControl>
+                        <FormControl isRequired>
+                            <FormLabel>Email address</FormLabel>
+                            <Input
+                                type='email'
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </FormControl>
+                        <FormControl isRequired>
+                            <FormLabel>Contact</FormLabel>
+                            <Input
+                                type='number'
+                                value={contact}
+                                onChange={(e) => setContact(e.target.value)}
+                            />
+                        </FormControl>
+                        <BrandButton
+                            color='indigo'
+                            type='submit'
+                        >
+                            edit user
+                        </BrandButton>
+                    </VStack>
+                </Card>
+            }
+        </>
     )
 }
 

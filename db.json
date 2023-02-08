@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "mehdi",
+      "email": "mehdi@gmail.com",
+      "contact": "5534885"
+    },
+    {
+      "username": "abbass",
+      "email": "abbass@gmail.com",
+      "contact": "45667554885",
+      "id": 2
+    },
+    {
+      "id": 4,
+      "username": "jim carry",
+      "email": "jumcarry@hotmail.fr",
+      "contact": "06135258555"
+    },
+    {
+      "username": "miranda oubo",
+      "email": "miranda.oubo@gmail.com",
+      "contact": "71564852345",
+      "id": 5
+    }
+  ]
+}

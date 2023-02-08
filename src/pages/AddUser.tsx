@@ -1,27 +1,25 @@
 import { useState } from 'react'
 import { Card, FormControl, FormLabel, Heading, Input, useToast, VStack } from '@chakra-ui/react'
-// import { useNavigate } from 'react-router-dom'
 import BrandButton from '../components/BrandButton'
-import { useAppDispatch } from '../store'
-import { addUser } from '../features/users/UserSlice'
 import { useNavigate } from 'react-router-dom'
-import { v4 as uuidv4 } from 'uuid'
+import { useAddUserMutation } from '../features/api/ApiSlice'
 
 
 const AddUser = () => {
 
     const toast = useToast()
-    const dispatch = useAppDispatch()
+
+    const [addUser] = useAddUserMutation()
 
     const navigate = useNavigate()
     const [username, setUsername] = useState<string>("")
     const [email, setEmail] = useState<string>("")
-    const [description, setDescription] = useState<string>("")
+    const [contact, setContact] = useState<string>("")
 
     const handleAddUser = (e: any) => {
         e.preventDefault()
-        if (username !== '' && email !== '' && description !== '') {
-            dispatch(addUser({ id: uuidv4(), username, email, description }));
+        if (username !== '' && email !== '' && contact !== '') {
+            addUser({ username, email, contact })
             navigate('/');
             toast({
                 description: "user added successfully",
@@ -56,8 +54,8 @@ const AddUser = () => {
                     <Input type='email' onChange={(e) => setEmail(e.target.value)} />
                 </FormControl>
                 <FormControl isRequired>
-                    <FormLabel>Profile Bio</FormLabel>
-                    <Input type='text' onChange={(e) => setDescription(e.target.value)} />
+                    <FormLabel>Contact</FormLabel>
+                    <Input type='number' onChange={(e) => setContact(e.target.value)} />
                 </FormControl>
                 <BrandButton
                     color='indigo'

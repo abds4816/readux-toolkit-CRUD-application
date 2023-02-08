@@ -7,10 +7,11 @@ const Navbar = () => {
     return (
         <Flex align='center' justify='space-between' py='4'>
             <Link to='/'>
-                <Heading>logo</Heading>
+                <Heading>CRUD with Json Server</Heading>
             </Link>
             <IconButton
                 aria-label='theme'
+                rounded='full'
                 icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
                 onClick={toggleColorMode} />
         </Flex>

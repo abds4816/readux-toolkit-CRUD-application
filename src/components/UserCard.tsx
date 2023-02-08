@@ -1,22 +1,22 @@
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { Avatar, Box, Button, Center, Heading, HStack, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
-import { deleteUser, user } from '../features/users/UserSlice'
-import { useAppDispatch } from '../store'
+import { useDeleteUserMutation } from '../features/api/ApiSlice'
+import { user } from '../features/api/ApiSlice'
 import BrandButton from './BrandButton'
 
 const UserCard = (props: user) => {
 
     // Hooks
+    const [deleteUser] = useDeleteUserMutation()
     const toast = useToast()
     const navigate = useNavigate()
-    const dispatch = useAppDispatch()
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     //   Delete User function
     const handleDeleteUser = (e: any) => {
         e.preventDefault()
-        dispatch(deleteUser(props.id))
+        deleteUser(props.id)
         toast({
             description: 'user deleted successfully',
             status: 'success',
@@ -38,9 +38,6 @@ const UserCard = (props: user) => {
                 textAlign={'center'}>
                 <Avatar
                     size={'xl'}
-                    src={
-                        'https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ'
-                    }
                     mb={4}
                     pos={'relative'}
                     _after={{
@@ -65,7 +62,7 @@ const UserCard = (props: user) => {
                     textAlign={'center'}
                     color={useColorModeValue('gray.700', 'gray.400')}
                     px={3}>
-                    {props.description}
+                    {props.contact}
                 </Text>
 
                 <HStack mt='8' spacing='4'>
