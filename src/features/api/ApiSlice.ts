@@ -10,7 +10,7 @@ export interface user {
 
 export const usersApi = createApi({
     reducerPath: 'usersApi',
-    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000/" }),
+    baseQuery: fetchBaseQuery({ baseUrl: "https://userscrudserver.onrender.com" }),
     tagTypes: ['user'],
     endpoints: (builder) => ({
         users: builder.query<user[], void>({
